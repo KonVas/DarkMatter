@@ -1,5 +1,5 @@
 var http = require('http');
-var jsonObj  = require("/Users/KV/Dev/projects/DarkMatter/jsonfiles/data.json");
+var jsonObj  = require("/Users/KV/Dev/projects/DarkMatter/offline/jsonfiles/data.json");
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.end( JSON.stringify(jsonObj));
