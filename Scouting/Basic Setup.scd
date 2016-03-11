@@ -1,3 +1,5 @@
+// depends on wslib and Canvas3D
+
 // load and parse your scouting file (will take a little while)
 (
 var file;
@@ -115,8 +117,8 @@ setEventFunc = {|key|
 	});
 	//data.flat.size.postln;
 	msg = ['/newEvent', eventNum, ~addrBook.me.name, numJets, data.flat].flat;
-	msg.postln;
-	msg.size.postln;
+/*	msg.postln;
+	msg.size.postln;*/
 	try {broadcastAddr.sendMsg(*msg); }// update visualisations
 };
 
@@ -168,11 +170,11 @@ SynthDef("pingy",
 		Out.ar(out, Splay.ar(SinOsc.ar({freq * Rand(0.98, 1.02) } ! 20 , 0, env)))
 }).add;
 
-Pbind(\freq, Pjet(0, "pt")).play; //use pt of jet 0 of current CERN event
+Pbind(\freq, Pjet(1, "pt").trace).play; //use pt of jet 0 of current CERN event
 
 Pbind(\freq, Pjet(Pseq([0, 1], inf))).play // jetnum can be a pattern
 
 // use phi of constituents 0, 2, 4 of jet 0 of current CERN event
 Pdef(\test, Pbind(\freq, Pjet(Pseq([0, 1], inf), \pt), \dur, Pconstituent(0, Prand([0, 2, 4], inf), \phi).abs * 0.1)).play
 
-Pdef(\test, Pbind(\instrument, \pingy, \freq, Pjet(Prand((0..9), inf), \pt), \dur, Pconstituent(0, Prand([0, 2, 4], inf), \pt).abs * 0.1)).play
+Pdef(\test, Pbind(\instrument, \pingy, \freq, Pjet(Prand((0..9), inf), \pt), \dur, Pconstituent(0, Prand([0, 2, 4], inf), \pt) * 0.1 + 0.1).trace).play
