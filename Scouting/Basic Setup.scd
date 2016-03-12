@@ -88,17 +88,17 @@ eventView.action = {|view|
 
 // setup updates
 /*NetAddr.broadcastFlag = true;
-broadcastAddr = NMLNetAddrMP("255.255.255.255", 57120 + (0..7)); // for SC testing*/
-//broadcastAddr = NMLNetAddrMP("255.255.255.255", 12000);
-//broadcastAddr = NetAddr.localAddr;
-broadcastAddr = NetAddr("192.168.0.100", 12000);
+visualisationAddr = NMLNetAddrMP("255.255.255.255", 57120 + (0..7)); // for SC testing*/
+//visualisationAddr = NMLNetAddrMP("255.255.255.255", 12000);
+//visualisationAddr = NetAddr.localAddr;
+visualisationAddr = NetAddr("192.168.0.100", 12000);
 
 // this will let the visualisations know what you've used.
 Event.default.parent[\finish]= {
 	var eventNum, numElementsUsed;
 	eventNum = ~darkmatter["eventNum"].interpret;
 	numElementsUsed = ~constituents.size;
-	broadcastAddr.sendMsg('/eventUsed', eventNum, numElementsUsed, *(~constituents.asArray.flat));
+	visualisationAddr.sendMsg('/eventUsed', eventNum, numElementsUsed, *(~constituents.asArray.flat));
 	// cleanup before next SC event
 	//~constituents.postln;
 	~constituents.clear;
@@ -133,7 +133,7 @@ setEventFunc = {|key|
 	msg = ['/newEvent', eventNum, ~addrBook.me.name, numJets, data.flat].flat;
 /*	msg.postln;
 	msg.size.postln;*/
-	try {broadcastAddr.sendMsg(*msg); }// update visualisations
+	try {visualisationAddr.sendMsg(*msg); }// update visualisations
 };
 
 //OSCdef(\test, {|msg| msg.postln },'/newEvent');
