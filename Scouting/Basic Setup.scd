@@ -26,15 +26,17 @@ file.close;
 
 //////// General setup and GUI
 (
-var width = 800, height = 800;
-var window, canvas, comp, eventView, jetView, activeEventText, setEventFunc, codeButton, items, colorFunc;
-var broadcastAddr;
+var width = 1000, height = 800;
+var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, codeButton, items, ranges, colorFunc;
+var visualisationAddr;
 var euler = exp(1);
 
 window = Window("Available Events", Rect(128, 64, width, height), false).front;
-canvas = Canvas3D(window, Rect(0, 0, width * 0.8, height)).background_(Color.black).scale_(200).perspective_(0.4).distance_(6);
+canvas = Canvas3D(window, Rect(0, 0, width * 0.8, height)).background_(Color.black).scale_(200).perspective_(0.4);
 comp = CompositeView(window, Rect(width * 0.8, 0, width * 0.2, height));
-comp.layout = VLayout(activeEventText = StaticText().string_("Active: "), eventView = ListView(), jetView = ListView(), codeButton = Button().states_([["Generate Code"]]));
+comp.layout = VLayout(activeEventText = StaticText().string_("Active: "), [eventView = ListView(), s:18], jetView = ListView(), [infoView = StaticText().align_(\topLeft).font_(Font("Helvetica", 12)), s:18], HLayout(StaticText().string_("Zoom: "), [zoomSlider = Slider().orientation_(\horizontal), s:0]), codeButton = Button().states_([["Generate Code"]]));
+
+zoomSlider.action = {|view| canvas.distance = (1 - view.value) * 90 + 1; canvas.refresh};
 
 eventView.items = ~events.keys.asArray;
 
@@ -44,7 +46,13 @@ eventView.action = {|view|
 	currentEvent = ~events[key];
 	//Event.default.parent[\darkmatter] = currentEvent; // stash it globally
 
-	paths = currentEvent["jets"].collect({|jet|
+	ranges = IdentityDictionary();
+	paths = currentEvent["jets"].collect({|jet, i|
+
+		ranges[\jetM] = ranges[\jetM].add(jet["m"].interpret);
+		ranges[\jetEta] = ranges[\jetEta].add(jet["eta"].interpret);
+		ranges[\jetPhi] = ranges[\jetPhi].add(jet["phi"].interpret);
+		ranges[\jetPt] = ranges[\jetPt].add(jet["pt"].interpret);
 		jet["constituents"].collect({|constituent|
 			var eta = constituent["eta"].interpret; // 0 to in practice +/- infinity for theta = 0/180 degrees. but probably +/- 4.5-5
 			var pt = constituent["pt"].interpret; // goes from 0.604827 to 135.41 in sample data; 0-3500 gV
@@ -53,9 +61,15 @@ eventView.action = {|view|
 			var x = pt * cos(phi);
 			var y = pt * sin(phi);
 			var z = pt * sinh(eta);
+			ranges[\constituentEta] = ranges[\constituentEta].add(eta);
+			ranges[\constituentPhi] = ranges[\constituentPhi].add(phi);
+			ranges[\constituentPt] = ranges[\constituentPt].add(pt);
+
 			[[0, 0, 0], [x, y, z]]
 		});
 	});
+
+	infoView.string = "Jets:\n\nm: %\t%\nphi: %\t%\neta: %\t%\npt: %\t%\n\nConstituents:\n\nphi: %\t%\neta: %\t%\npt: %\t%".format(ranges[\jetM].minItem, ranges[\jetM].maxItem, ranges[\jetEta].minItem, ranges[\jetEta].maxItem, ranges[\jetPhi].minItem, ranges[\jetPhi].maxItem, ranges[\jetPt].minItem, ranges[\jetPt].maxItem, ranges[\constituentPhi].minItem, ranges[\constituentPhi].maxItem, ranges[\constituentEta].minItem, ranges[\constituentEta].maxItem, ranges[\constituentPt].minItem, ranges[\constituentPt].maxItem);
 
 	jetView.items = (0..paths.size - 1).add("All");
 
@@ -157,7 +171,7 @@ canvas.mouseMoveAction = {|v,x,y|
 };
 
 canvas.mouseMoveAction.value(nil, 50, 50); // initial rotation
-
+zoomSlider.valueAction_(0.8);
 )
 
 
