@@ -27,7 +27,7 @@ file.close;
 //////// General setup and GUI
 (
 var width = 1000, height = 800;
-var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, codeButton, items, ranges, colorFunc;
+var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, codeButton, items, ranges, rangeString, colorFunc;
 var visualisationAddr;
 var euler = exp(1);
 
@@ -151,14 +151,36 @@ eventView.mouseDownAction = {|view, x, y, modifiers, buttonNumber, clickCount|
 
 
 jetView.action = {|view|
-	var selectedJet, colorFunc;
-	selectedJet = view.value;
+	var selectedJetNum, selectedJet, colorFunc, constRanges, jetString;
+	selectedJetNum = view.value;
 	items.do({|jet, i|
 		jet.do({|item|
-			item.color = if(i == selectedJet || {jetView.item == "All" }, { Color.rand }, {Color.grey(rand(0.5, 0.8)).alpha_(0.4) });
+			item.color = if(i == selectedJetNum || {jetView.item == "All" }, { Color.rand }, {Color.grey(rand(0.5, 0.8)).alpha_(0.4) });
 		});
 	});
 	canvas.refresh;
+
+	if(jetView.item != "All", {
+		constRanges = IdentityDictionary.new;
+		selectedJet = ~events[eventView.item.interpret]["jets"][selectedJetNum];
+		selectedJet.postln;
+		selectedJet["constituents"].do({|constituent|
+			var eta = constituent["eta"].interpret; // 0 to in practice +/- infinity for theta = 0/180 degrees. but probably +/- 4.5-5
+			var pt = constituent["pt"].interpret; // goes from 0.604827 to 135.41 in sample data; 0-3500 gV
+			var phi = constituent["phi"].interpret; // 0 +/- pi
+/*			var theta = 2 * atan(euler.pow(eta.neg)); // maybe more useful, from 0 - pi
+			var x = pt * cos(phi);
+			var y = pt * sin(phi);
+			var z = pt * sinh(eta);*/
+			constRanges[\constituentEta] = constRanges[\constituentEta].add(eta);
+			constRanges[\constituentPhi] = constRanges[\constituentPhi].add(phi);
+			constRanges[\constituentPt] = constRanges[\constituentPt].add(pt);
+		});
+
+		jetString = "\n\nSelected Jet:\n\nOverall m: %\nphi: %\t%\neta: %\t%\npt: %\t%\n\n".format(selectedJet["m"], constRanges[\constituentPhi].minItem, constRanges[\constituentPhi].maxItem, constRanges[\constituentEta].minItem, constRanges[\constituentEta].maxItem, constRanges[\constituentPt].minItem, constRanges[\constituentPt].maxItem);
+		infoView.string = rangeString ++ jetString;
+
+	}, { infoView.string = rangeString});
 };
 
 eventView.valueAction = 0;
