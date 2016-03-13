@@ -69,16 +69,19 @@ eventView.action = {|view|
 		});
 	});
 
-	infoView.string = "Jets:\n\nm: %\t%\nphi: %\t%\neta: %\t%\npt: %\t%\n\nConstituents:\n\nphi: %\t%\neta: %\t%\npt: %\t%".format(ranges[\jetM].minItem, ranges[\jetM].maxItem, ranges[\jetEta].minItem, ranges[\jetEta].maxItem, ranges[\jetPhi].minItem, ranges[\jetPhi].maxItem, ranges[\jetPt].minItem, ranges[\jetPt].maxItem, ranges[\constituentPhi].minItem, ranges[\constituentPhi].maxItem, ranges[\constituentEta].minItem, ranges[\constituentEta].maxItem, ranges[\constituentPt].minItem, ranges[\constituentPt].maxItem);
+	infoView.string = rangeString = "Jets:\n\nm: %\t%\nphi: %\t%\neta: %\t%\npt: %\t%\n\nConstituents:\n\nphi: %\t%\neta: %\t%\npt: %\t%".format(ranges[\jetM].minItem, ranges[\jetM].maxItem, ranges[\jetPhi].minItem, ranges[\jetPhi].maxItem, ranges[\jetEta].minItem, ranges[\jetEta].maxItem,  ranges[\jetPt].minItem, ranges[\jetPt].maxItem, ranges[\constituentPhi].minItem, ranges[\constituentPhi].maxItem, ranges[\constituentEta].minItem, ranges[\constituentEta].maxItem, ranges[\constituentPt].minItem, ranges[\constituentPt].maxItem);
 
 	jetView.items = (0..paths.size - 1).add("All");
 
 	canvas.items = [];
 	items = paths.collect({|jet, i|
-		jet.collect({|path|
-			var item;
+		jet.collect({|path, j|
+			var item, m;
+			m = currentEvent["jets"][i]["constituents"][j]["m"].interpret;
 			item = Canvas3DItem().width_(2).paths_([path]);
+			canvas.add(Canvas3DItem.regPrism(3).color_(Color.white).transform(Canvas3D.mScale(m, m, m)).transform(Canvas3D.mTranslate(*(path.last))));
 			canvas.add(item);
+
 			item
 		});
 	});
