@@ -43,3 +43,46 @@ Pconstituent : Pattern {
 		^inval
 	}
 }
+
+Pinterval : Pattern {
+	var jetnum, which, key, <>repeats;
+	*new { arg jetnum, which, key = "m", repeats=inf;
+		^super.newCopyArgs(jetnum, which, key, repeats);
+	}
+	storeArgs { ^[which,repeats ] }
+	embedInStream { arg inval;
+		var jetStream, keyStream, i, j, thisJetNum, outInt, jets, keyVal, constituentsNum;
+		if (which.asString == "jet", {
+			jetStream = jetnum.asStream;
+			keyStream = jetStream.asStream;
+		}, {
+			jetStream = jetnum.asStream;
+			keyStream = which.asStream;
+		});
+		repeats.value(inval).do({
+			i = keyStream.next(inval);
+			if(i.isNil) { ^inval };
+			j = jetStream.next(inval);
+			if(j.isNil) { ^inval };
+			jets = Event.default.parent[\darkmatter]["jets"];
+			thisJetNum = j%jets.size;
+			if (which.asString == "jet", {
+				keyVal = jets;
+				i = thisJetNum;
+			}, {
+				keyVal = jets[thisJetNum]["constituents"];
+				i = i%keyVal.size;
+			});
+			constituentsNum = jets[thisJetNum]["constituents"].size;
+			if (constituentsNum == 0) { constituentsNum = 1 };
+			outInt = keyVal[i][key.asString].interpret / constituentsNum;
+			if (which.asString == "jet", {
+				Event.default.parent.constituents = Event.default.parent.constituents.add([thisJetNum.asInteger, -1]).asSet;
+			}, {
+				Event.default.parent.constituents = Event.default.parent.constituents.add([thisJetNum.asInteger, i]).asSet;
+			});
+			inval = outInt.embedInStream(inval);
+		});
+		^inval
+	}
+}
