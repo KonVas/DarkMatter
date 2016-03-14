@@ -88,3 +88,60 @@ PconstituentS : Pconstituent {  // scales values for key between 0 and 1
 		^inval
 	}
 }
+
+PnumJets : Pattern {
+	var <>repeats;
+	*new { arg repeats=inf;
+		^super.newCopyArgs(repeats);
+	}
+	storeArgs { ^[repeats ] }
+	embedInStream { arg inval;
+		var jets;
+		repeats.value(inval).do({
+			jets = Event.default.parent[\darkmatter]["jets"];
+			inval = jets.size.embedInStream(inval);
+		});
+		^inval
+	}
+}
+
+PnumConstituents : Pattern {
+	var which, <>repeats;
+	*new { arg which = 0, repeats=inf;
+		^super.newCopyArgs(which, repeats);
+	}
+	storeArgs { ^[which, repeats ] }
+	embedInStream { arg inval;
+		var jetStream, i, jets, jet;
+		jetStream = which.asStream;
+		repeats.value(inval).do({
+			i = jetStream.next(inval);
+			if(i.isNil) { ^inval };
+			jets = Event.default.parent[\darkmatter]["jets"];
+			i = i%jets.size;
+			jet = jets[i];
+			inval = jet["constituents"].size.embedInStream(inval);
+		});
+		^inval
+	}
+}
+
+PtotalConstituents : Pattern {
+	var <>repeats;
+	*new { arg repeats=inf;
+		^super.newCopyArgs(repeats);
+	}
+	storeArgs { ^[repeats ] }
+	embedInStream { arg inval;
+		var jets, total;
+		repeats.value(inval).do({
+			total = 0;
+			jets = Event.default.parent[\darkmatter]["jets"];
+			jets.do({|jet|
+				total = total + jet["constituents"].size;
+			});
+			inval = total.embedInStream(inval);
+		});
+		^inval
+	}
+}
