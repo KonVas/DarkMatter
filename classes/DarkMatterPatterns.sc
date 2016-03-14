@@ -1,6 +1,6 @@
 Pjet : Pattern {
 	var which, key, <>repeats;
-	*new { arg which, key = "pt", repeats=inf;
+	*new { arg which = 0, key = "pt", repeats=inf;
 		^super.newCopyArgs(which, key, repeats);
 	}
 	storeArgs { ^[which,key, repeats ] }
@@ -44,7 +44,7 @@ PjetS : Pjet { // scales values for key between 0 and 1
 
 Pconstituent : Pattern {
 	var jetnum, which, key, <>repeats;
-	*new { arg jetnum, which, key = "pt", repeats=inf;
+	*new { arg jetnum = 0, which = 0, key = "pt", repeats=inf;
 		^super.newCopyArgs(jetnum, which, key, repeats);
 	}
 	storeArgs { ^[which,repeats ] }
