@@ -98,10 +98,11 @@ visualisationAddr = NetAddr("192.168.0.100", 12000);
 
 // this will let the visualisations know what you've used.
 Event.default.parent[\finish]= {
-	var eventNum, numElementsUsed;
+	var eventNum, numElementsUsed, constituents;
 	eventNum = ~darkmatter["eventNum"].interpret;
 	numElementsUsed = ~constituents.size;
-	visualisationAddr.sendMsg('/eventUsed', eventNum, numElementsUsed, *(~constituents.asArray.flat));
+	constituents = ~constituents.copy;
+	SystemClock.sched(s.latency * 0.5, {try { visualisationAddr.sendMsg('/eventUsed', eventNum, numElementsUsed, *(constituents.asArray.flat.postln)) }});
 	// cleanup before next SC event
 	//~constituents.postln;
 	~constituents.clear;
