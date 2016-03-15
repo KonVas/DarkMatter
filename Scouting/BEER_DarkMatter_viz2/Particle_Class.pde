@@ -1,5 +1,6 @@
 class Particle {
   float size;
+  float origSize;
   PVector loc; 
   PVector limit; 
   PVector vel;
@@ -19,6 +20,7 @@ class Particle {
 
   Particle(float r, float g, float b, float x, float y, float z, float locx, float locy, float locz, float size_, int id_) {
     size = size_; 
+    origSize = size;
     id = id_;
     loc = new PVector(locx, locy, locz);
     vel = new PVector(x, y, z).mult(0.001);
@@ -99,6 +101,7 @@ class Particle {
 
   void flash() {
     isFlashing = true;
+    size = size * 1.4;
 
     flashStartT = frameCount;
     flashDurFrames = flashDur * frameRate;
@@ -111,9 +114,11 @@ class Particle {
     float n = frameCount-flashStartT;
     if (n < flashDurFrames) {
       c = color(255-(delr*n), 255-(delg*n), 255-(delb*n)); 
+      size = constrain(size * 0.97, origSize, size * 1.5);
     }
     if (n >= flashDurFrames) {
       isFlashing = false;
+      size = origSize;
     }
   }
   
