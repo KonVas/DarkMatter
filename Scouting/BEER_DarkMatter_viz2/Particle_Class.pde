@@ -63,7 +63,7 @@ class Particle {
     //popMatrix();
     pushMatrix();
     translate(loc.x,loc.y,loc.z);
-    //stroke(255,alpha);
+    stroke(0,alpha);
     fill(c, alpha);
     rotateX(rot.x);
     rotateY(rot.y);
