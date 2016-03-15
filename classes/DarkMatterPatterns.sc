@@ -29,7 +29,7 @@ PjetS : Pjet { // scales values for key between 0 and 1
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
 			jets = Event.default.parent[\darkmatter]["jets"];
-			vals = jets.collect({|jt| jt[key].interpret });
+			vals = jets.collect({|jt| jt[key.asString].interpret });
 			min = vals.minItem;
 			max = vals.maxItem;
 			i = i%jets.size;
