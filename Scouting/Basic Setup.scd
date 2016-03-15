@@ -19,10 +19,7 @@ file.close;
 	eventNum = event["eventNum"].interpret;
 	eventNum -> event;
 }, IdentityDictionary);
-~events.writeArchive("events.arch".resolveRelative);
 )
-
-~events = Object.readArchive("events.arch".resolveRelative);
 
 //////// General setup and GUI
 (
@@ -31,7 +28,8 @@ var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEven
 var visualisationAddr;
 var euler = exp(1);
 
-window = Window("Available Events", Rect(128, 64, width, height), false).front;
+~window.notNil.if({ ~window.close });
+window = ~window = Window("Available Events", Rect(128, 64, width, height), false).front;
 canvas = Canvas3D(window, Rect(0, 0, width * 0.8, height)).background_(Color.black).scale_(200).perspective_(0.4);
 comp = CompositeView(window, Rect(width * 0.8, 0, width * 0.2, height));
 comp.layout = VLayout(activeEventText = StaticText().string_("Active: "), [eventView = ListView(), s:18], [jetView = ListView(), s: 10], [infoView = StaticText().align_(\topLeft).font_(Font("Helvetica", 12)), s:18], HLayout(StaticText().string_("Zoom: "), [zoomSlider = Slider().orientation_(\horizontal), s:0]), codeButton = Button().states_([["Generate Code"]]));
@@ -102,7 +100,7 @@ Event.default.parent[\finish]= {
 	eventNum = ~darkmatter["eventNum"].interpret;
 	numElementsUsed = ~constituents.size;
 	constituents = ~constituents.copy;
-	SystemClock.sched(s.latency * 0.5, {try { visualisationAddr.sendMsg('/eventUsed', eventNum, numElementsUsed, *(constituents.asArray.flat.postln)) }});
+	SystemClock.sched(s.latency * 0.5, {try { visualisationAddr.sendMsg('/eventUsed', eventNum, numElementsUsed, *(constituents.asArray.flat)) }});
 	// cleanup before next SC event
 	//~constituents.postln;
 	~constituents.clear;
@@ -131,12 +129,13 @@ setEventFunc = {|key|
 			var z = pt * sinh(eta);
 			[x, y, z, eta, pt, phi, m].asFloat; // need
 		});
-		[numConstituents, constituentData].postln;
+		[numConstituents, constituentData];
 	});
 	//data.flat.size.postln;
 	msg = ['/newEvent', eventNum, ~addrBook.me.name, numJets, data.flat].flat;
-/*	msg.postln;
-	msg.size.postln;*/
+	/*	msg.postln;*/
+	/*msg.size.postln;
+	msg.postcs;*/
 	try {visualisationAddr.sendMsg(*msg); }// update visualisations
 };
 
