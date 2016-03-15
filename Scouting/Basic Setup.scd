@@ -197,6 +197,29 @@ canvas.mouseMoveAction = {|v,x,y|
 
 canvas.mouseMoveAction.value(nil, 50, 50); // initial rotation
 zoomSlider.valueAction_(0.8);
+
+~removeLF = {|string|
+	var newString;
+	var nl;
+	nl = (5.rand+5)*10;
+	newString = "";
+	string.do{|j,i| if(j.ascii != 10){newString = newString ++ j}{newString = newString ++ " "};
+		if((i%nl == 0) && (i != 0),{newString = newString ++ "\n"});
+	};
+	newString;
+
+};
+
+thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.removeFunc(~codeDumpFunc);
+~codeDumpFunc = {|msg|
+	1.do{visualisationAddr.sendMsg(
+		"/codeRelay",
+		~addrBook.name.asString,
+		~removeLF.(msg.asString))}
+};
+
+
+thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.addFunc(~codeDumpFunc);
 )
 
 
