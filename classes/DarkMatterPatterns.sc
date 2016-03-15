@@ -49,13 +49,15 @@ Pconstituent : Pattern {
 	}
 	storeArgs { ^[which,repeats ] }
 	embedInStream { arg inval;
-		var constituentStream, i, thisJetNum, constituent, jets, constituents;
+		var constituentStream, jetStream, i, thisJetNum, constituent, jets, constituents;
 		constituentStream = which.asStream;
+		jetStream = jetnum.asStream;
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
 			jets = Event.default.parent[\darkmatter]["jets"];
-			thisJetNum = jetnum%jets.size;
+			thisJetNum = jetStream.next(inval);
+			thisJetNum = thisJetNum%jets.size;
 			constituents = jets[thisJetNum]["constituents"];
 			i = i%constituents.size;
 			constituent = constituents[i][key.asString].interpret;
@@ -68,13 +70,15 @@ Pconstituent : Pattern {
 
 PconstituentS : Pconstituent {  // scales values for key between 0 and 1
 	embedInStream { arg inval;
-		var constituentStream, i, thisJetNum, constituent, jets, constituents, min, max, vals;
+		var constituentStream, jetStream, i, thisJetNum, constituent, jets, constituents, min, max, vals;
 		constituentStream = which.asStream;
+		jetStream = jetnum.asStream;
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
 			jets = Event.default.parent[\darkmatter]["jets"];
-			thisJetNum = jetnum%jets.size;
+			thisJetNum = jetStream.next(inval);
+			thisJetNum = thisJetNum%jets.size;
 			constituents = jets[thisJetNum]["constituents"];
 			vals = constituents.collect({|ct| ct[key.asString].interpret });
 			min = vals.minItem;
