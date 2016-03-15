@@ -22,7 +22,7 @@ class Particle {
     id = id_;
     loc = new PVector(locx, locy, locz);
     vel = new PVector(x, y, z).mult(0.001);
-    limit = new PVector(width, height, width + height);
+    limit = new PVector(width, height, width + height * 5);
     acc = new PVector(-0.002, -0.002, -0.002);
     rot = new PVector(0, 0);
     rotShift = PVector.random2D().mult(0.2);
