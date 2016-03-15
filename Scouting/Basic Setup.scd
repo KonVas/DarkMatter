@@ -213,10 +213,7 @@ zoomSlider.valueAction_(0.8);
 
 thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.removeFunc(~codeDumpFunc);
 ~codeDumpFunc = {|msg|
-	1.do{visualisationAddr.sendMsg(
-		"/codeRelay",
-		~addrBook.name.asString,
-		~removeLF.(msg.asString))}
+	visualisationAddr.sendMsg("/codeRelay", ~addrBook.me.name.asString, ~removeLF.(msg.asString));
 };
 
 
