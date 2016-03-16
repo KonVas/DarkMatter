@@ -4,9 +4,6 @@ OscP5 osc;
 OscProperties oscProps;
 
 
-int mode = 0;
-
-
 //declarations for particles;
 IntDict userToEvent = new IntDict();
 IntDict eventNumDict = new IntDict();
@@ -58,18 +55,16 @@ void draw() {
     codes.get(i).display();
   }
 
-  if (mode == 0) {
     //pushMatrix();
     //rotateX(frameCount * 0.01);
     //rotateY(frameCount * 0.014);
     //rotateZ(frameCount * 0.03);
-    for (int i = 0; i < nextEventIndex; i++) {
-      if (!events[i].isDead) {
-        events[i].run();
-      }
+  for (int i = 0; i < nextEventIndex; i++) {
+    if (!events[i].isDead) {
+      events[i].run();
     }
-    //popMatrix();
   }
+    //popMatrix();
   
   //println(frameRate);
 }
