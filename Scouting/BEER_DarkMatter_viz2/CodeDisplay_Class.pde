@@ -5,7 +5,7 @@ class CodeDisplay {
   color colr;
   float alpha = 255;
   boolean isRunning = true;
-  float lifeSpan = 150;
+  float lifeSpan = 25;
 
   CodeDisplay(String thisStrg, float x_, float y_, color colr_) {
     strg = thisStrg;
