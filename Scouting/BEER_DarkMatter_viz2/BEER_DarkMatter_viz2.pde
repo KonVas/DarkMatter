@@ -12,6 +12,7 @@ IntDict userToEvent = new IntDict();
 IntDict eventNumDict = new IntDict();
 int nextEventIndex = 0;
 Event[] events = new Event[1200];
+IntDict userVizMode = new IntDict();
 
 //temp
 //int eventNum = 1552065906;

@@ -1,4 +1,4 @@
-class Particle {
+class BeamParticle {
   float size;
   float origSize;
   PVector loc; 
@@ -18,12 +18,12 @@ class Particle {
   float spinStartT = 0, spinDur = 0.3, spinDurFrames;
 
 
-  Particle(float r, float g, float b, float x, float y, float z, float locx, float locy, float locz, float size_, int id_) {
-    size = size_; 
+  BeamParticle(float r, float g, float b, float x, float y, float z, float locx, float locy, float locz, float size_, int id_) {
+    size = size_ * 0.1; 
     origSize = size;
     id = id_;
     loc = new PVector(locx, locy, locz);
-    vel = new PVector(x, y, z).mult(0.001);
+    vel = new PVector(x, y, z).mult(0.04);
     limit = new PVector(width, height, width + height * 5);
     acc = new PVector(-0.002, -0.002, -0.002);
     rot = new PVector(0, 0);
@@ -40,7 +40,7 @@ class Particle {
   }
 
   void update() {
-    move();
+    //move();
     if (isFlashing) {
       flashing();
     }
@@ -64,20 +64,30 @@ class Particle {
     //sphere(size);
     //popMatrix();
     pushMatrix();
-    translate(loc.x,loc.y,loc.z);
-    stroke(0,alpha);
-    fill(c, alpha);
+    //translate(loc.x,loc.y,loc.z);
+    stroke(c,alpha);
+    line(0, 0, 0, vel.x, vel.y, vel.z);
+    pushMatrix();
+    translate(vel.x, vel.y, vel.z);
     rotateX(rot.x);
     rotateY(rot.y);
     rotateZ(rot.z);
-    ellipse(0, 0, size, size);
-    
+    stroke(0,alpha);
+    box(size, size, size);
+    popMatrix();
     popMatrix();
   }
 
   void move() {
     vel.add(acc);
     loc.add(vel);
+    //if ((loc.x < -width/2)|| (loc.x > width/2)) {
+    //  vel.x *= -0.99;
+    //}
+    //if ((loc.y < -height*3/4)|| (loc.y > height*3/4)) {
+    //  vel.y *= -0.999;
+    //  loc.y = height*3/4;
+    //}
     if(abs(loc.x) >= limit.x) {
       vel.x = vel.x * -1.0;
       acc.x = 0.0;
@@ -94,7 +104,6 @@ class Particle {
 
   void flash() {
     isFlashing = true;
-    size = size * 2.4;
 
     flashStartT = frameCount;
     flashDurFrames = flashDur * frameRate;
@@ -107,17 +116,15 @@ class Particle {
     float n = frameCount-flashStartT;
     if (n < flashDurFrames) {
       c = color(255-(delr*n), 255-(delg*n), 255-(delb*n)); 
-      size = constrain(size * 0.97, origSize, size * 2.5);
     }
     if (n >= flashDurFrames) {
       isFlashing = false;
-      size = origSize;
     }
   }
   
   void spin() {
     isSpinning = true;
-
+    size = constrain(size * 2.5, origSize, origSize * 2.5);
     spinStartT = frameCount;
     spinDurFrames = flashDur * frameRate;
   }
@@ -129,10 +136,11 @@ class Particle {
       rot.x = (rot.x + rotShift.x)%(2 * PI);
       rot.y = (rot.y + rotShift.y)%(2 * PI);
       //rot.z = (rot.z + 0.2)%(2 * PI);
-      
+      size = constrain(size * 0.97, origSize, origSize * 2.5);
     }
     if (n >= spinDurFrames) {
       isSpinning = false;
+      size = origSize;
     }
   }
 }
