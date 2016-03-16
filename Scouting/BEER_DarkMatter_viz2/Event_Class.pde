@@ -20,10 +20,11 @@ class Event {
       rotation = PVector.random3D().mult(0.01);
       //origRotation = rotation.copy();
     }
-   translation = PVector.random3D();
-   translation.x *= (width * 0.5) + 0.2;
-   translation.y *= (height * 0.5) + 0.2;
-   translation.z *= width + height;
+   translation = new PVector();
+   translation.x = random(1.0) * (width * 0.8) + (width * 0.1);
+   translation.y = random(1.0) * (height * 0.8) + (height * 0.1);
+   translation.z = (random(-2.0) * width) + (width * 0.1);
+   println(translation);
   }
   
   void addJet(int index, int numConstituents) {
