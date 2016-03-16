@@ -14,6 +14,16 @@ void oscEvent(OscMessage msg) {
       codes.add(new CodeDisplay(string, sin(frameCount * 0.1)*width/2, cos(frameCount*0.1)*height/2, c));
     }
   }
+  
+  if (msg.checkAddrPattern("/fadeOut")==true) {
+    println("fade out");
+    if (msg.checkTypetag("s")==true) {
+      String userName = msg.get(0).stringValue();
+      if (userToEvent.hasKey(userName)) {
+        events[eventNumDict.get(str(userToEvent.get(userName)))].fadeOut();
+      }
+    }
+  }
 
 
 

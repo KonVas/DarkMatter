@@ -15,7 +15,15 @@ void oscEvent(OscMessage msg) {
     }
   }
 
-
+  if (msg.checkAddrPattern("/fadeOut")==true) {
+    println("fade out");
+    if (msg.checkTypetag("s")==true) {
+      String userName = msg.get(0).stringValue();
+      if (userToEvent.hasKey(userName)) {
+        events[eventNumDict.get(str(userToEvent.get(userName)))].fadeOut();
+      }
+    }
+  }
 
   if (msg.checkAddrPattern("/newEvent")==true) {
     int eventNum, numJets;

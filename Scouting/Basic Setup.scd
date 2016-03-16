@@ -217,6 +217,8 @@ thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.removeFunc(~
 
 
 thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.addFunc(~codeDumpFunc);
+
+CmdPeriod.add({ visualisationAddr.sendMsg("/fadeOut", ~addrBook.me.name.asString); });
 )
 
 
