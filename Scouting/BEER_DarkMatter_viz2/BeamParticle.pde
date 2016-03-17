@@ -35,7 +35,7 @@ class BeamParticle {
     update();
     display();
     if(toFade == true){
-    fadeOut(3);
+    fadeOut(4);
     }
   }
 
