@@ -19,7 +19,7 @@ class BeamParticle {
 
 
   BeamParticle(float r, float g, float b, float x, float y, float z, float locx, float locy, float locz, float size_, int id_) {
-    size = size_ * 0.1; 
+    size = (log(size_ + 0.001/0.001)) / (log(0.157627/0.001)) * (150-10) + 10; 
     origSize = size;
     id = id_;
     loc = new PVector(locx, locy, locz);

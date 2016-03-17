@@ -19,12 +19,13 @@ class Particle {
 
 
   Particle(float r, float g, float b, float x, float y, float z, float locx, float locy, float locz, float size_, int id_) {
-    size = size_; 
+    //size = size_; 
+    size = (log(size_ + 0.001/0.001)) / (log(0.157627/0.001)) * (200-50) + 50; 
     origSize = size;
     id = id_;
     loc = new PVector(locx, locy, locz);
     vel = new PVector(x, y, z).mult(0.001);
-    limit = new PVector(width, height, width + height * 5);
+    limit = new PVector(width * 3, height * 3, width + height * 5);
     acc = new PVector(-0.002, -0.002, -0.002);
     rot = new PVector(0, 0);
     rotShift = PVector.random2D().mult(0.2);
@@ -94,7 +95,7 @@ class Particle {
 
   void flash() {
     isFlashing = true;
-    size = size * 2.4;
+    size = size * 1.4;
 
     flashStartT = frameCount;
     flashDurFrames = flashDur * frameRate;
@@ -107,7 +108,7 @@ class Particle {
     float n = frameCount-flashStartT;
     if (n < flashDurFrames) {
       c = color(255-(delr*n), 255-(delg*n), 255-(delb*n)); 
-      size = constrain(size * 0.97, origSize, size * 2.5);
+      size = constrain(size * 0.97, origSize, size * 1.4);
     }
     if (n >= flashDurFrames) {
       isFlashing = false;

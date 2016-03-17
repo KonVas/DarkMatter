@@ -96,8 +96,13 @@ void oscEvent(OscMessage msg) {
           g = random(0.0, 255.0);
           b = random(0.0, 255.0);
         }
-        size = abs(m)*1000;
-
+        //size = max(abs(m)*1000, 30);
+        
+        //size = map(abs(m), 0, 50000, 30, 3000);
+        println(abs(m));
+        //size = (log(abs(m) + 0.001/0.001)) / (log(0.157627/0.001)) * (500-50) + 50;
+        //println(size);
+        size = abs(m);
         events[nextEventIndex].addParticle(i, r, g, b, x, y, z, size, j);
       }
     }

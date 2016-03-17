@@ -24,7 +24,6 @@ class Event {
    translation.x = random(1.0) * (width * 0.8) + (width * 0.1);
    translation.y = random(1.0) * (height * 0.8) + (height * 0.1);
    translation.z = (random(-2.0) * width) + (width * 0.1);
-   println(translation);
   }
   
   void addJet(int index, int numConstituents) {
