@@ -24,7 +24,7 @@ file.close;
 //////// General setup and GUI
 (
 var width = 1000, height = 800;
-var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, codeButton, items, ranges, rangeString, colorFunc;
+var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, visModeButton, items, ranges, rangeString, colorFunc;
 var visualisationAddr;
 var euler = exp(1);
 
@@ -32,7 +32,7 @@ var euler = exp(1);
 window = ~window = Window("Available Events", Rect(128, 64, width, height), false).front;
 canvas = Canvas3D(window, Rect(0, 0, width * 0.8, height)).background_(Color.black).scale_(200).perspective_(0.4);
 comp = CompositeView(window, Rect(width * 0.8, 0, width * 0.2, height));
-comp.layout = VLayout(activeEventText = StaticText().string_("Active: "), [eventView = ListView(), s:18], [jetView = ListView(), s: 10], [infoView = StaticText().align_(\topLeft).font_(Font("Helvetica", 12)), s:18], HLayout(StaticText().string_("Zoom: "), [zoomSlider = Slider().orientation_(\horizontal), s:0]), codeButton = Button().states_([["Generate Code"]]));
+comp.layout = VLayout(activeEventText = StaticText().string_("Active: "), [eventView = ListView(), s:18], [jetView = ListView(), s: 10], [infoView = StaticText().align_(\topLeft).font_(Font("Helvetica", 12)), s:18], HLayout(StaticText().string_("Zoom: "), [zoomSlider = Slider().orientation_(\horizontal), s:0]), visModeButton = Button().states_([["Mode 0 Active"], ["Mode 1 Active"]]));
 
 zoomSlider.action = {|view| canvas.distance = (1 - view.value) * 90 + 1; canvas.refresh};
 
@@ -219,23 +219,31 @@ thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.removeFunc(~
 thisProcess.interpreter.codeDump = thisProcess.interpreter.codeDump.addFunc(~codeDumpFunc);
 
 CmdPeriod.add({ visualisationAddr.sendMsg("/fadeOut", ~addrBook.me.name.asString); });
+
+visModeButton.action = {|view| visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, view.value) };
+
+visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, 0)
 )
 
 
 ///////// Sample Pattern use
 
 SynthDef("pingy",
-{ arg out=0, freq=440, sustain=0.05, amp=0.1, pan;
-	var env;
-	env = EnvGen.kr(Env.perc(0.01, sustain), doneAction:2) * amp;
+	{ arg out=0, freq=440, sustain=0.05, amp=0.1, pan;
+		var env;
+		env = EnvGen.kr(Env.perc(0.01, sustain), doneAction:2) * amp;
 		Out.ar(out, Splay.ar(SinOsc.ar({freq * Rand(0.98, 1.02) } ! 20 , 0, env)))
 }).add;
 
-Pbind(\freq, Pjet(1, "pt").trace).play; //use pt of jet 0 of current CERN event
+Pbind(\freq, Pconstituent(0, 0, "pt")).play; //use pt of jet 0 of current CERN event
 
 Pbind(\freq, Pjet(Pseq([0, 1], inf))).play // jetnum can be a pattern
 
 // use phi of constituents 0, 2, 4 of jet 0 of current CERN event
-Pdef(\test, Pbind(\freq, Pjet(Pseq([0, 1], inf), \pt), \dur, Pconstituent(0, Prand([0, 2, 4], inf), \phi).abs * 0.1)).play
+Pdef(\test, Pbind(\freq, Pjet(Pseq([0, 1], inf), \pt), \dur, PconstituentS(0, Prand([0, 2, 4], inf), \phi).trace * 0.1)).play
 
 Pdef(\test, Pbind(\instrument, \pingy, \freq, Pjet(Prand((0..9), inf), \pt), \dur, Pconstituent(0, Prand([0, 2, 4], inf), \pt) * 0.1 + 0.1).trace).play
+
+Pbind(\dummy, PtotalConstituents().trace).play
+
+NetAddr("127.0.0.1", 12000).sendMsg('/changeVizMode', ~addrBook.me.name, 1)
