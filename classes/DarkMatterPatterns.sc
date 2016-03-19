@@ -97,6 +97,68 @@ PconstituentS : Pconstituent {  // scales values for key between 0 and 1
 	}
 }
 
+// access all the constituents in the event in order
+PallConstituents : Pattern {
+	var which, key, <>repeats;
+	*new { arg which = 0, key = "pt", repeats=inf;
+		^super.newCopyArgs(which, key, repeats);
+	}
+	storeArgs { ^[which,repeats ] }
+	embedInStream { arg inval;
+		var currentEvent, constituentStream, i, constituent, jets, constituents;
+		constituentStream = which.asStream;
+		repeats.value(inval).do({
+			i = constituentStream.next(inval);
+			if(i.isNil) { ^inval };
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
+			constituents = jets.collect({|jet, j|
+				jet["constituents"].collect({|constit, k|
+					constit = Dictionary.newFrom(constit); // why is this needed?
+					constit[\jetNum] = j;
+					constit[\constNum] = k;
+					constit;
+				});
+			}).flatten;
+			i = i%constituents.size;
+			constituent = constituents[i][key.asString].interpret;
+			Event.default.parent.constituents = Event.default.parent.constituents.add([constituents[i][\jetNum].asInteger, constituents[i][\constNum].asInteger]).asSet;
+			inval = constituent.embedInStream(inval);
+		});
+		^inval
+	}
+}
+
+PallConstituentsS : PallConstituents {
+	embedInStream { arg inval;
+		var currentEvent, constituentStream, i, constituent, jets, constituents, min, max, vals;
+		constituentStream = which.asStream;
+		repeats.value(inval).do({
+			i = constituentStream.next(inval);
+			if(i.isNil) { ^inval };
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
+			constituents = jets.collect({|jet, j|
+				jet["constituents"].collect({|constit, k|
+					constit = Dictionary.newFrom(constit); // why is this needed?
+					constit[\jetNum] = j;
+					constit[\constNum] = k;
+					constit;
+				});
+			}).flatten;
+			vals = constituents.collect({|ct| ct[key.asString].interpret });
+			min = vals.minItem;
+			max = vals.maxItem;
+			i = i%constituents.size;
+			constituent = constituents[i][key.asString].interpret;
+			constituent = constituent.linlin(min, max, 0, 1);
+			Event.default.parent.constituents = Event.default.parent.constituents.add([constituents[i][\jetNum].asInteger, constituents[i][\constNum].asInteger]).asSet;
+			inval = constituent.embedInStream(inval);
+		});
+		^inval
+	}
+}
+
 PnumJets : Pattern {
 	var <>repeats;
 	*new { arg repeats=inf;
