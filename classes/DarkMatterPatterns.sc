@@ -5,12 +5,13 @@ Pjet : Pattern {
 	}
 	storeArgs { ^[which,key, repeats ] }
 	embedInStream { arg inval;
-		var jetStream, i, jets, jet;
+		var currentEvent, jetStream, i, jets, jet;
 		jetStream = which.asStream;
 		repeats.value(inval).do({
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			i = i%jets.size;
 			jet = jets[i][key.asString].interpret;
 			Event.default.parent.constituents = Event.default.parent.constituents.add([i.asInteger, -1]).asSet; // -1 means jet data used
@@ -23,12 +24,13 @@ Pjet : Pattern {
 PjetS : Pjet { // scales values for key between 0 and 1
 
 	embedInStream { arg inval;
-		var jetStream, i, jets, jet, min, max, vals;
+		var currentEvent, jetStream, i, jets, jet, min, max, vals;
 		jetStream = which.asStream;
 		repeats.value(inval).do({
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			vals = jets.collect({|jt| jt[key.asString].interpret });
 			min = vals.minItem;
 			max = vals.maxItem;
@@ -49,13 +51,14 @@ Pconstituent : Pattern {
 	}
 	storeArgs { ^[which,repeats ] }
 	embedInStream { arg inval;
-		var constituentStream, jetStream, i, thisJetNum, constituent, jets, constituents;
+		var currentEvent, constituentStream, jetStream, i, thisJetNum, constituent, jets, constituents;
 		constituentStream = which.asStream;
 		jetStream = jetnum.asStream;
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			thisJetNum = jetStream.next(inval);
 			thisJetNum = thisJetNum%jets.size;
 			constituents = jets[thisJetNum]["constituents"];
@@ -70,13 +73,14 @@ Pconstituent : Pattern {
 
 PconstituentS : Pconstituent {  // scales values for key between 0 and 1
 	embedInStream { arg inval;
-		var constituentStream, jetStream, i, thisJetNum, constituent, jets, constituents, min, max, vals;
+		var currentEvent, constituentStream, jetStream, i, thisJetNum, constituent, jets, constituents, min, max, vals;
 		constituentStream = which.asStream;
 		jetStream = jetnum.asStream;
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			thisJetNum = jetStream.next(inval);
 			thisJetNum = thisJetNum%jets.size;
 			constituents = jets[thisJetNum]["constituents"];
@@ -100,9 +104,10 @@ PnumJets : Pattern {
 	}
 	storeArgs { ^[repeats ] }
 	embedInStream { arg inval;
-		var jets;
+		var currentEvent, jets;
 		repeats.value(inval).do({
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			inval = jets.size.embedInStream(inval);
 		});
 		^inval
@@ -116,12 +121,13 @@ PnumConstituents : Pattern {
 	}
 	storeArgs { ^[which, repeats ] }
 	embedInStream { arg inval;
-		var jetStream, i, jets, jet;
+		var currentEvent, jetStream, i, jets, jet;
 		jetStream = which.asStream;
 		repeats.value(inval).do({
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			i = i%jets.size;
 			jet = jets[i];
 			inval = jet["constituents"].size.embedInStream(inval);
@@ -137,10 +143,11 @@ PtotalConstituents : Pattern {
 	}
 	storeArgs { ^[repeats ] }
 	embedInStream { arg inval;
-		var jets, total;
+		var currentEvent, jets, total;
 		repeats.value(inval).do({
 			total = 0;
-			jets = Event.default.parent[\darkmatter]["jets"];
+			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			jets = currentEvent["jets"];
 			jets.do({|jet|
 				total = total + jet["constituents"].size;
 			});
