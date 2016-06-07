@@ -234,7 +234,7 @@ visModeButton.action = {|view| visualisationAddr.sendMsg('/changeVizMode', ~addr
 
 visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, 0);
 
-TempoClock.default = ~clock = BeaconClock(~addrBook);
+TempoClock.default = ~clock = BeaconClock(~addrBook).permanent_(true);
 )
 
 
