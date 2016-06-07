@@ -10,7 +10,7 @@ Pjet : Pattern {
 		repeats.value(inval).do({
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			i = i%jets.size;
 			jet = jets[i][key.asString].interpret;
@@ -29,7 +29,7 @@ PjetS : Pjet { // scales values for key between 0 and 1
 		repeats.value(inval).do({
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			vals = jets.collect({|jt| jt[key.asString].interpret });
 			min = vals.minItem;
@@ -57,7 +57,7 @@ Pconstituent : Pattern {
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			thisJetNum = jetStream.next(inval);
 			thisJetNum = thisJetNum%jets.size;
@@ -79,7 +79,7 @@ PconstituentS : Pconstituent {  // scales values for key between 0 and 1
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			thisJetNum = jetStream.next(inval);
 			thisJetNum = thisJetNum%jets.size;
@@ -110,7 +110,7 @@ PallConstituents : Pattern {
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			constituents = jets.collect({|jet, j|
 				jet["constituents"].collect({|constit, k|
@@ -136,7 +136,7 @@ PallConstituentsS : PallConstituents {
 		repeats.value(inval).do({
 			i = constituentStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			constituents = jets.collect({|jet, j|
 				jet["constituents"].collect({|constit, k|
@@ -168,7 +168,7 @@ PnumJets : Pattern {
 	embedInStream { arg inval;
 		var currentEvent, jets;
 		repeats.value(inval).do({
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			inval = jets.size.embedInStream(inval);
 		});
@@ -188,7 +188,7 @@ PnumConstituents : Pattern {
 		repeats.value(inval).do({
 			i = jetStream.next(inval);
 			if(i.isNil) { ^inval };
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			i = i%jets.size;
 			jet = jets[i];
@@ -208,7 +208,7 @@ PtotalConstituents : Pattern {
 		var currentEvent, jets, total;
 		repeats.value(inval).do({
 			total = 0;
-			currentEvent = Event.default.parent[\events][inval[\event]] ?? {Event.default.parent[\darkmatter]};
+			currentEvent = if(inval.notNil, {Event.default.parent[\events][inval[\event]]}) ?? {Event.default.parent[\darkmatter]};
 			jets = currentEvent["jets"];
 			jets.do({|jet|
 				total = total + jet["constituents"].size;
