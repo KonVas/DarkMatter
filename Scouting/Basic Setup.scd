@@ -19,6 +19,8 @@ file.close;
 	eventNum = event["eventNum"].interpret;
 	eventNum -> event;
 }, IdentityDictionary);
+
+Event.default.parent[\events] = ~events; // stash globally
 )
 
 //////// General setup and GUI
@@ -92,7 +94,9 @@ eventView.action = {|view|
 visualisationAddr = NMLNetAddrMP("255.255.255.255", 57120 + (0..7)); // for SC testing*/
 //visualisationAddr = NMLNetAddrMP("255.255.255.255", 12000);
 //visualisationAddr = NetAddr.localAddr;
-visualisationAddr = NetAddr("192.168.0.100", 12000);
+visualisationAddr = NetAddr("192.168.222.99", 12000);
+//visualisationAddr = NetAddr("127.0.0.1", 12000);
+~visAddr = visualisationAddr;
 
 // this will let the visualisations know what you've used.
 Event.default.parent[\finish]= {
@@ -106,11 +110,12 @@ Event.default.parent[\finish]= {
 	~constituents.clear;
 };
 
-setEventFunc = {|key|
+setEventFunc = ~setEventFunc = {|key, name|
 	var currentEvent, eventNum, jets, numJets, data, msg;
+	key = key ?? {eventView.item.interpret};
 	currentEvent = ~events[key];
 	Event.default.parent[\darkmatter] = currentEvent; // stash it globally
-	activeEventText.string = "Active:" + key.asString;
+	{ activeEventText.string = "Active:" + key.asString}.defer;
 	eventNum = currentEvent.["eventNum"].interpret;
 	jets = currentEvent["jets"];
 	numJets = jets.size;
@@ -127,12 +132,15 @@ setEventFunc = {|key|
 			var x = pt * cos(phi);
 			var y = pt * sin(phi);
 			var z = pt * sinh(eta);
+			/*var x = pt * sin(theta) * cos(phi);
+			var y = pt * sin(theta) * sin(phi);
+			var z = pt * cos(theta);*/
 			[x, y, z, eta, pt, phi, m].asFloat; // need
 		});
 		[numConstituents, constituentData];
 	});
 	//data.flat.size.postln;
-	msg = ['/newEvent', eventNum, ~addrBook.me.name, numJets, data.flat].flat;
+	msg = ['/newEvent', eventNum, name ?? {~addrBook.me.name}, numJets, data.flat].flat;
 	/*	msg.postln;*/
 	/*msg.size.postln;
 	msg.postcs;*/
