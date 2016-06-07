@@ -114,6 +114,8 @@ setEventFunc = ~setEventFunc = {|key, name|
 	var currentEvent, eventNum, jets, numJets, data, msg;
 	key = key ?? {eventView.item.interpret};
 	currentEvent = ~events[key];
+	~currentEvent = currentEvent;
+	~currentEventNum = key;
 	Event.default.parent[\darkmatter] = currentEvent; // stash it globally
 	{ activeEventText.string = "Active:" + key.asString}.defer;
 	eventNum = currentEvent.["eventNum"].interpret;
