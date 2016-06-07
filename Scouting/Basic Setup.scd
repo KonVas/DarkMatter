@@ -232,7 +232,9 @@ CmdPeriod.add({ visualisationAddr.sendMsg("/fadeOut", ~addrBook.me.name.asString
 
 visModeButton.action = {|view| visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, view.value) };
 
-visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, 0)
+visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, 0);
+
+TempoClock.default = ~clock = BeaconClock(~addrBook);
 )
 
 
