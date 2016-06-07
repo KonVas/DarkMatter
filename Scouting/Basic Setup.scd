@@ -26,7 +26,7 @@ Event.default.parent[\events] = ~events; // stash globally
 //////// General setup and GUI
 (
 var width = 1000, height = 800;
-var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, visModeButton, items, ranges, rangeString, colorFunc;
+var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, visModeButton, showCurrentButton, showCurrent = false, items, ranges, rangeString, colorFunc;
 var visualisationAddr;
 var euler = exp(1);
 
@@ -34,9 +34,11 @@ var euler = exp(1);
 window = ~window = Window("Available Events", Rect(128, 64, width, height), false).front;
 canvas = Canvas3D(window, Rect(0, 0, width * 0.8, height)).background_(Color.black).scale_(200).perspective_(0.4);
 comp = CompositeView(window, Rect(width * 0.8, 0, width * 0.2, height));
-comp.layout = VLayout(activeEventText = StaticText().string_("Active: "), [eventView = ListView(), s:18], [jetView = ListView(), s: 10], [infoView = StaticText().align_(\topLeft).font_(Font("Helvetica", 12)), s:18], HLayout(StaticText().string_("Zoom: "), [zoomSlider = Slider().orientation_(\horizontal), s:0]), visModeButton = Button().states_([["Mode 0 Active"], ["Mode 1 Active"]]));
+comp.layout = VLayout(HLayout([activeEventText = StaticText().string_("Active: "), s:10], showCurrentButton = Button().states_([["Show", Color.black, Color.clear], ["Show", Color.black, Color.white]])), [eventView = ~eventView = ListView(), s:18], [jetView = ListView(), s: 10], [infoView = StaticText().align_(\topLeft).font_(Font("Helvetica", 12)), s:18], HLayout(StaticText().string_("Zoom: "), [zoomSlider = Slider().orientation_(\horizontal), s:0]), visModeButton = Button().states_([["Mode 0 Active"], ["Mode 1 Active"]]));
 
 zoomSlider.action = {|view| canvas.distance = (1 - view.value) * 90 + 1; canvas.refresh};
+
+showCurrentButton.action = {|but| showCurrent = but.value.booleanValue; if(showCurrent, {{eventView.valueAction = eventView.items.indexOf(~currentEventNum)}.defer}) };
 
 eventView.items = ~events.keys.asArray;
 
@@ -146,7 +148,9 @@ setEventFunc = ~setEventFunc = {|key, name|
 	/*	msg.postln;*/
 	/*msg.size.postln;
 	msg.postcs;*/
-	try {visualisationAddr.sendMsg(*msg); }// update visualisations
+	try {visualisationAddr.sendMsg(*msg); };// update visualisations
+
+	if(showCurrent, {{eventView.valueAction = eventView.items.indexOf(~currentEventNum)}.defer});
 };
 
 //OSCdef(\test, {|msg| msg.postln },'/newEvent');
