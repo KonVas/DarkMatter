@@ -259,3 +259,34 @@ Pdef(\test, Pbind(\instrument, \pingy, \freq, Pjet(Prand((0..9), inf), \pt), \du
 Pbind(\dummy, PtotalConstituents().trace).play
 
 NetAddr("127.0.0.1", 12000).sendMsg('/changeVizMode', ~addrBook.me.name, 1)
+
+// set the event programatically
+
+~setEventFunc.(~events.keys.choose); // set a random event
+
+// choose 4 random events
+Tdef(\setEvent, {
+	var evs = ~events.keys.asArray.scramble.keep(4);
+
+	loop {
+		evs.do({|num|
+			~visAddr.sendMsg('/changeVizMode', ~addrBook.me.name, [0, 1].choose);
+			~setEventFunc.(num); // can also take a name
+			2.wait;
+		});
+	}
+}).play
+
+// choose 4 events with only 1 jet
+Tdef(\setEvent, {
+	var evs = ~events.select({|ev| ev["jets"].size == 2 });
+	evs = evs.keys.asArray.scramble.keep(4);
+	loop {
+		evs.do({|num|
+			~visAddr.sendMsg('/changeVizMode', ~addrBook.me.name, [0, 1].choose);
+			~setEventFunc.(num); // can also take a name
+			2.wait;
+		});
+	}
+}).play(quant:1); // quant to next whole beat
+
