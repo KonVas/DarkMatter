@@ -203,7 +203,7 @@ setEventFunc.value(eventView.item.interpret);
 // spin canvas on mouse move
 canvas.mouseMoveAction = {|v,x,y|
 	canvas.transforms = [
-		Canvas3D.mRotateY(x / -200 % 2pi),
+		Canvas3D.mRotateY(x / 200 % 2pi),
 		Canvas3D.mRotateX(y / 200 % 2pi)
 	];
 	canvas.refresh;
