@@ -242,7 +242,6 @@ TempoClock.default = ~clock = BeaconClock(~addrBook).permanent_(true);
 
 // allows for external switching of current DM event
 OSCdef(\changeEvent, {|msg, time, addr|
-	[msg, addr].postln;
 	if(~addrBook.includesAddr(addr), {
 		~setEventFunc.(msg[1]);
 	});
