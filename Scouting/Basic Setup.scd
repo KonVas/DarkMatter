@@ -4,7 +4,7 @@
 (
 var file;
 
-file = File("/Library/Application Support/SuperCollider/Extensions/DarkMatter/Scouting/tests/scouting_split_ph","r");
+file = File("scouting_split_bk".resolveRelative,"r");
 ~events = file.readAllString;
 file.close;
 ~events = ~events.split(Char.nl);
