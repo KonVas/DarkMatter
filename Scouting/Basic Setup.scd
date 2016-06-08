@@ -239,6 +239,14 @@ visModeButton.action = {|view| visualisationAddr.sendMsg('/changeVizMode', ~addr
 visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, 0);
 
 TempoClock.default = ~clock = BeaconClock(~addrBook).permanent_(true);
+
+// allows for external switching of current DM event
+OSCdef(\changeEvent, {|msg, time, addr|
+	[msg, addr].postln;
+	if(~addrBook.includesAddr(addr), {
+		~setEventFunc.(msg[1]);
+	});
+}, '/changeEvent');
 )
 
 
@@ -294,3 +302,20 @@ Tdef(\setEvent, {
 	}
 }).play(quant:1); // quant to next whole beat
 
+
+//////////////////////////
+/// Use a task to change events for everyone else
+// here we assume everyone has the same DM event file.
+
+// choose 4 events with only 1 jet
+Tdef(\setEvent, {
+	var evs = ~events.select({|ev| ev["jets"].size == 2 });
+	evs = ~addrBook.names.collectAs({|name| name->Pseq(evs.keys.asArray.scramble.keep(4), inf).asStream}, IdentityDictionary);
+	loop {
+		evs.keysValuesDo({|name, stream|
+			//~visAddr.sendMsg('/changeVizMode', name, [0, 1].choose);
+			~addrBook.send(name, 'changeEvent', stream.next);
+			2.wait;
+		});
+	}
+}).play
