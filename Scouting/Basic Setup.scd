@@ -246,6 +246,14 @@ OSCdef(\changeEvent, {|msg, time, addr|
 		~setEventFunc.(msg[1]);
 	});
 }, '/changeEvent');
+
+// coordidinated stop
+OSCdef(\allStop, {|msg, time, addr|
+	if(~addrBook.includesAddr(addr), {
+		Ndef.clear;
+		Pdef.clear;
+	});
+}, '/allStop');
 )
 
 
@@ -318,3 +326,8 @@ Tdef(\setEvent, {
 		});
 	}
 }).play
+
+
+////////////// All Stop
+
+~addrBook.sendAll('/allStop')
