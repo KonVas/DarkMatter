@@ -96,7 +96,7 @@ eventView.action = {|view|
 visualisationAddr = NMLNetAddrMP("255.255.255.255", 57120 + (0..7)); // for SC testing*/
 //visualisationAddr = NMLNetAddrMP("255.255.255.255", 12000);
 //visualisationAddr = NetAddr.localAddr;
-visualisationAddr = NetAddr("192.168.222.99", 12000);
+visualisationAddr = ~addrBook[\winston].addr.copy.port_(12000);
 //visualisationAddr = NetAddr("127.0.0.1", 12000);
 ~visAddr = visualisationAddr;
 
