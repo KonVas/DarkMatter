@@ -1,0 +1,3 @@
+markdown: redcarpet
+baseurl: /DarkMatter
+exclude: ['README.md', 'offline', 'online', 'Scouting']
