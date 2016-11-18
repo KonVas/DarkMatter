@@ -4,13 +4,11 @@
 
 //061 Rocks!
 
-//:
+ 
 
-s.reboot;
-s.meter;
 MasterEQ(2);
 
-//:
+ 
 
 (
 n = LFNoise1;
@@ -90,7 +88,7 @@ Pdef(\fb,
 );
 )
 
-//:
+ 
 
 Ndef(\feed)[0] = Pdef(\fb);
 Ndef(\feed).play;

@@ -4,7 +4,7 @@
 (
 var file;
 
-file = File("/Library/Application Support/SuperCollider/Extensions/DarkMatter/Scouting/tests/scouting_split_ph","r");
+file = File("/Users/Home_KV/Dev/DarkMatter/Scouting/scouting_split_bk","r");
 ~events = file.readAllString;
 file.close;
 ~events = ~events.split(Char.nl);
@@ -29,6 +29,8 @@ var width = 1000, height = 800;
 var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, visModeButton, items, ranges, rangeString, colorFunc;
 var visualisationAddr;
 var euler = exp(1);
+
+PdefAllGui(16, nil, Rect(0, 0, width /2, height / 10));
 
 ~window.notNil.if({ ~window.close });
 window = ~window = Window("Available Events", Rect(128, 64, width, height), false).front;
@@ -236,12 +238,14 @@ visualisationAddr.sendMsg('/changeVizMode', ~addrBook.me.name, 0)
 
 ///////// Sample Pattern use
 
+(
 SynthDef("pingy",
 	{ arg out=0, freq=440, sustain=0.05, amp=0.1, pan;
 		var env;
 		env = EnvGen.kr(Env.perc(0.01, sustain), doneAction:2) * amp;
 		Out.ar(out, Splay.ar(SinOsc.ar({freq * Rand(0.98, 1.02) } ! 20 , 0, env)))
 }).add;
+)
 
 Pbind(\freq, Pconstituent(0, 0, "pt")).play; //use pt of jet 0 of current CERN event
 
