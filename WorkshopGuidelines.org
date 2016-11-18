@@ -20,3 +20,10 @@ Open _SynthDefs.scd_ file, load all the contents, this will open another window 
 ** Initial guidelines
 To explore the different events listed in the interface of the software, just select another event and see how this changes the sound.
 If you want you can change the content of the Pdefs too, but be careful not to mess with control settings, such as amp (amplitude), cause this might yield in unexpected volume levels.
+For example, this code snippet below provides access in the data using PjetS pattern, which in turn controls the frequency control of a synth.
+#+BEGIN_SRC sclang
+Pdef(\vinty, Pbind(\instrument, \vint,
+\amp, 0.3,
+\freq, PjetS(Prand((0..9), inf), \pt).linlin(0, 1, 120.0, 220.0),
+\dur, Pconstituent(0, Prand([0, 2, 4], inf), \pt) * 0.1 + 0.1).trace);
+#+END_SRC
