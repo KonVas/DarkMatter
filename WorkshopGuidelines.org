@@ -16,7 +16,7 @@ Now that you have installed all the software in your computer, take a ride on ho
 
 ** Start your engines
 Open _SynthDefs.scd_ file, load all the contents, this will open another window listing the /players/ of the synths, to start one press Play!
-#+ Graphical User Interface for Pdef
+
 [[./img/Pdef_image.png]]
 
 ** Initial guidelines
