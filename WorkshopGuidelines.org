@@ -16,11 +16,13 @@ Now that you have installed all the software in your computer, take a ride on ho
 
 ** Start your engines
 Open _SynthDefs.scd_ file, load all the contents, this will open another window listing the /players/ of the synths, to start one press Play!
+#+ Graphical User Interface for Pdef
+[[./img/Pdef_image.png]]
 
 ** Initial guidelines
 To explore the different events listed in the interface of the software, just select another event and see how this changes the sound.
-If you want you can change the content of the Pdefs too, but be careful not to mess with control settings, such as amp (amplitude), cause this might yield in unexpected volume levels.
-For example, this code snippet below provides access in the data using PjetS pattern, which in turn controls the frequency control of a synth.
+If you want you can change the content of the =Pdefs= too, but be careful not to mess with control settings, such as amp (amplitude), cause this might yield in unexpected volume levels.
+For example, this code snippet below provides access in the data using =PjetS= pattern, which in turn controls the =frequency= control of a synth.
 #+BEGIN_SRC sclang
 Pdef(\vinty, Pbind(\instrument, \vint,
 \amp, 0.3,
