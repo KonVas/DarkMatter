@@ -30,5 +30,5 @@ Pdef(\vinty, Pbind(\instrument, \vint,
 \dur, Pconstituent(0, Prand([0, 2, 4], inf), \pt) * 0.1 + 0.1).trace);
 #+END_SRC
 
-This project is a collaboration netween the Birmingham Ensemble for Electroacoustic Research and the art@CMS, at CERN in Switzerland.
+This project is a collaboration between the Birmingham Ensemble for Electroacoustic Research and the art@CMS, at CERN in Switzerland.
 For info see this [[http://konvas.github.io/DarkMatter/][link]].
