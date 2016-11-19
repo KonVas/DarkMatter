@@ -25,7 +25,7 @@ Event.default.parent[\events] = ~events; // stash globally
 
 //////// General setup and GUI
 (
-var width = 1000, height = 800;
+var width = 1000, height = 700;
 var window, canvas, comp, eventView, jetView, activeEventText, infoView, setEventFunc, zoomSlider, visModeButton, showCurrentButton, showCurrent = false, items, ranges, rangeString, colorFunc;
 var visualisationAddr;
 var euler = exp(1);
@@ -96,8 +96,8 @@ eventView.action = {|view|
 visualisationAddr = NMLNetAddrMP("255.255.255.255", 57120 + (0..7)); // for SC testing*/
 //visualisationAddr = NMLNetAddrMP("255.255.255.255", 12000);
 //visualisationAddr = NetAddr.localAddr;
-visualisationAddr = ~addrBook[\winston].addr.copy.port_(12000);
-//visualisationAddr = NetAddr("127.0.0.1", 12000);
+//visualisationAddr = ~addrBook[\winston].addr.copy.port_(12000);
+visualisationAddr = NetAddr("192.168.1.144", 12000);
 ~visAddr = visualisationAddr;
 
 // this will let the visualisations know what you've used.
