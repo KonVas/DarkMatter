@@ -3,8 +3,7 @@
 // load and parse your scouting file (will take a little while)
 (
 var file;
-
-file = File("/Users/Home_KV/Dev/DarkMatter/Scouting/scouting_split_bk","r");
+file = File("scouting_split_bk".resolveRelative,"r");
 ~events = file.readAllString;
 file.close;
 ~events = ~events.split(Char.nl);

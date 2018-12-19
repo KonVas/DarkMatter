@@ -25,8 +25,8 @@ int nextIDc = 0;
 
 
 void setup() {
-  //size(960, 540, P3D);
-  fullScreen(P3D,2);
+  size(960, 540, P3D);
+  //fullScreen(P3D,2);
   smooth();
 
   oscProps = new OscProperties();
